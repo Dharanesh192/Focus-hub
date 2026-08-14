@@ -348,7 +348,7 @@ class TaskviewState extends State<Taskview> with WidgetsBindingObserver {
                               IconButton(
                                 icon: Icon(filtertask[index].isComplete ? Icons.task_alt : Icons.circle_outlined),
                                 color: filtertask[index].deadline == null
-                                    ? Colors.green
+                                    ? Colors.grey
                                     : filtertask[index].deadline!.difference(currentDate).inHours <= 96 && filtertask[index].deadline!.difference(currentDate).inHours > 0 && filtertask[index].isComplete == false
                                     ? Colors.orange
                                     : filtertask[index].deadline!.difference(currentDate).inHours > 0 || filtertask[index].isComplete == true
