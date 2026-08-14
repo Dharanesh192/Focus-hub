@@ -305,6 +305,10 @@ class _Homepagestate extends State<Homepage> {
                                 child: Text('Clear Filter', style: TextStyle(color: Colors.white54)),
                               ),
                               const PopupMenuItem(
+                                value: 'Deadline',
+                                child: Text('By deadline', style: TextStyle(color: Colors.white54)),
+                              ),
+                              const PopupMenuItem(
                                 value: 'High',
                                 child: Text('High Priority', style: TextStyle(color: Colors.white54)),
                               ),
@@ -315,11 +319,7 @@ class _Homepagestate extends State<Homepage> {
                               const PopupMenuItem(
                                 value: 'Low',
                                 child: Text('Low Priority', style: TextStyle(color: Colors.white54)),
-                              ),
-                              const PopupMenuItem(
-                                value: 'Deadline',
-                                child: Text('By deadline', style: TextStyle(color: Colors.white54)),
-                              ),
+                              )
                             ],
                             onSelected: (value) {
                               setState(() {
