@@ -16,8 +16,8 @@ Instead of only working with local state, this app talks to a real backend (Supa
 
 ## Table of Contents
  
-- [The tech stack used in this project](#-tech-stack)
-- [Project Overview](#-project-overview)
+- [The tech stack used in this project](#tech-stack)
+- [Project Overview](#project-overview)
 - [Features offered](#️-features)
 - [Requirements](#-requirements)
 - [Project Structure](#️-project-structure)
@@ -30,7 +30,7 @@ Instead of only working with local state, this app talks to a real backend (Supa
 
 ---
 
-### Tech Stack
+###Tech Stack
 
 - **Frontend:** Flutter Web (Dart)
 - **Local Storage:** Sembast (wraps IndexedDB on web)
@@ -41,7 +41,7 @@ Instead of only working with local state, this app talks to a real backend (Supa
 
 ---
 
-### Project Overview
+###Project Overview
 
 This project focuses on building an offline-first, cross-device task manager using Flutter Web.
 
