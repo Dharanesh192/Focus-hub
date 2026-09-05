@@ -14,7 +14,7 @@ Instead of only working with local state, this app talks to a real backend (Supa
 
 ---
 
-## 🧩 Tech Stack
+## Tech Stack
 
 - **Frontend:** Flutter Web (Dart)
 - **Local Storage:** Sembast (wraps IndexedDB on web)
@@ -25,7 +25,7 @@ Instead of only working with local state, this app talks to a real backend (Supa
 
 ---
 
-## 🧠 Project Overview
+## Project Overview
 
 This project focuses on building an offline-first, cross-device task manager using Flutter Web.
 
@@ -55,7 +55,7 @@ This project is ideal for people who want to understand:
 
 ---
 
-## 🛠️ Features
+## Features
 
 - ✅ Add, edit, delete, and complete tasks
 - 📶 Fully offline-first — works with no internet, syncs automatically when reconnected
@@ -68,7 +68,7 @@ This project is ideal for people who want to understand:
 
 ---
 
-## ▶️ How to Run the Code
+## How to Run the Code
 
 - Clone the repository:
   ```
@@ -85,7 +85,7 @@ This project is ideal for people who want to understand:
 
 ---
 
-## 📜 Requirements
+## Requirements
 
 - Install **Flutter SDK** (stable channel)
 - A **Supabase** project (free tier works) — for the database, auth, and Realtime
@@ -94,7 +94,7 @@ This project is ideal for people who want to understand:
 
 ---
 
-## 🗂️ Project Structure
+## Project Structure
 
 ```
 Flutter-Todo-List/
@@ -115,7 +115,7 @@ Flutter-Todo-List/
 
 ---
 
-## 🔎 What is Offline-First Architecture?
+## What is Offline-First Architecture?
 
 - Think of the local database (Sembast) as your **primary source**, and the remote database (Supabase) as the **backup and sync layer**
 - Every write goes to Sembast **first**, so the UI updates instantly regardless of network status
@@ -124,3 +124,37 @@ Flutter-Todo-List/
 - Supabase Realtime pushes back any changes made from *other* devices, keeping every open session consistent
 
 ---
+
+## System Architecture
+
+```
+        Flutter Web UI
+              ⇅
+     Sembast (Local/IndexedDB)
+              ⇅
+   Supabase (Postgres + Realtime)
+              ⇅
+        Google OAuth       
+```
+
+---
+
+## How It Works
+
+1️⃣ User adds/edits/completes a task → written to **Sembast** instantly (UI updates immediately)
+
+2️⃣ If online, the same task is pushed (upserted) to **Supabase** in the background
+
+3️⃣ **Supabase Realtime** broadcasts the change over a WebSocket channel to every other device logged into the same account
+
+4️⃣ Each connected device receives the change and updates its local Sembast copy, keeping all devices in sync without manual refresh
+
+5️⃣ If a device goes offline, all local changes are queued (`isSynced: false`) and automatically retried once connectivity returns
+
+6️⃣ On login, any tasks created as a guest can be optionally synced and merged into the user's account
+
+---
+
+## Status
+
+This is a **live learning project**, not a finished product — actively being improved as new Flutter concepts are learned and applied.
