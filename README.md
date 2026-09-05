@@ -29,8 +29,8 @@ Instead of only working with local state, this app talks to a real backend (Supa
 
 
 ---
-<a id="tech-stack"></a>
-## Tech Stack
+
+### Tech Stack
 
 - **Frontend:** Flutter Web (Dart)
 - **Local Storage:** Sembast (wraps IndexedDB on web)
@@ -41,7 +41,7 @@ Instead of only working with local state, this app talks to a real backend (Supa
 
 ---
 
-## Project Overview
+### Project Overview
 
 This project focuses on building an offline-first, cross-device task manager using Flutter Web.
 
@@ -71,7 +71,7 @@ This project is ideal for people who want to understand:
 
 ---
 
-## Features
+### Features
 
 - ✅ Add, edit, delete, and complete tasks
 - 📶 Fully offline-first — works with no internet, syncs automatically when reconnected
@@ -84,7 +84,7 @@ This project is ideal for people who want to understand:
 
 ---
 
-## Requirements
+### Requirements
 
 - Install **Flutter SDK** (stable channel)
 - A **Supabase** project (free tier works) — for the database, auth, and Realtime
@@ -93,7 +93,7 @@ This project is ideal for people who want to understand:
 
 ---
 
-## Project Structure
+### Project Structure
 
 ```
 Flutter-Todo-List/
@@ -114,7 +114,7 @@ Flutter-Todo-List/
 
 ---
 
-## What is Offline-First Architecture?
+### What is Offline-First Architecture?
 
 - Think of the local database (Sembast) as your **primary source**, and the remote database (Supabase) as the **backup and sync layer**
 - Every write goes to Sembast **first**, so the UI updates instantly regardless of network status
@@ -124,7 +124,7 @@ Flutter-Todo-List/
 
 ---
 
-## Why These Are Used
+### Why These Are Used
  
 **Supabase:**
 - Used as the **remote source of truth** for tasks once a user is logged in — every task eventually lands here so it's never lost even if local storage is cleared
@@ -139,7 +139,7 @@ Flutter-Todo-List/
 
 ---
 
-## Security & Risks
+### Security & Risks
  
 This project's Supabase **Project URL** and **anon (public) key** are visible in the client-side code and compiled JS bundle. This is intentional and expected — Supabase is designed so the anon key can be public, the same way a website's domain name isn't a secret. That said, it's worth understanding exactly what that does and doesn't expose.
  
@@ -160,7 +160,7 @@ This project's Supabase **Project URL** and **anon (public) key** are visible in
 
 ---
 
-## System Architecture
+### System Architecture
 
 ```
         Flutter Web UI
@@ -174,7 +174,7 @@ This project's Supabase **Project URL** and **anon (public) key** are visible in
 
 ---
 
-## How It Works
+### How It Works
 
 1️⃣ User adds/edits/completes a task → written to **Sembast** instantly (UI updates immediately)
 
@@ -190,6 +190,6 @@ This project's Supabase **Project URL** and **anon (public) key** are visible in
 
 ---
 
-## Status
+### Status
 
 This is a **live learning project**, not a finished product — actively being improved as new Flutter concepts are learned and applied.
