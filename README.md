@@ -1,49 +1,40 @@
-## 📌 About Saily
+### About Saily
 
 **Saily** is a voice-controlled desktop based assistant, its built as a project for college activity to include neural-network classification.
 
-Started with whisperflow for (speech to text) and pyttsx3 for (text to speech) as a demo. Turns into a voice assistance to run (system command, file operation, web activity) and AI features by using Gemini API  
+Started as a demmo project with whisperflow for (speech to text) and pyttsx3 for (text to speech). Turns into a voice assistance to run (system command, file operation, web activity) and AI features by using Gemini API  
 
 This project demonstrates how a voice assistant can:
 - Execute known commands instantly through a local, deterministic pipeline
 - Fall back to an LLM (Gemini) to interpret unfamiliar or loosely-worded requests
-- Stay modular — speech recognition, classification, intent discovery, and execution are separate components
+- For the Voice and speech recognition the browser's voice engine is used  
+- Stay as modular (classification, intent discovery, and execution are separate components)
 
 Instead of routing every request through an AI model, Saily classifies known commands locally and only calls out to Gemini when a request doesn't match anything in its known vocabulary — making it **fast for known commands** and **flexible for unfamiliar ones**.
 
 ---
 
-## Table of Contents
 
-- [🌐 The tech stack used in this project](#tech-stack)
-- [👀 Overview of the project](#project-overview)
-- [📢 What are the features offered](#features)
-- [🎯 Requirements](#requirements)
-- [🗂️ Project Structure](#project-structure)
-- [🤔 What is the Hybrid Command Architecture?](#what-is-the-hybrid-command-architecture)
-- [🧐 Why These Are Used](#why-these-are-used)
-- [⚠️ Safety & Command Control](#safety-and-command-control)
-- [🏗️ System Architecture](#system-architecture)
-- [🕵 How It Works](#how-it-works)
+### Current status
+
+**Saily is under development** as this project doesn't obtain its full potential. Right now its 90% rule based execution and remaining comes under the decision making by NN and handling uncertainty by Gemini's API call. In this project I want to create my own NLM for handling uncertainty, decision making, executing commands and finally having a memory with personality
 
 ---
 
 ### Tech Stack
 
-> *Not fully pinned down in the project notes yet — filling this in with what's implied, flag anything to correct:*
-
 - **Command Understanding:** Local Neural Network (NN) classifier for known commands
 - **AI Fallback:** Gemini (intent/function discovery for unknown requests)
-- **Speech Input:** Speech-to-text layer (engine/library TBD)
+- **Speech Input/Output:** Speech-to-text (Browser's default engine)
 - **Execution Layer:** Local command handlers mapped to OS-level actions
-- **Programming Execution:** Supports running Python, C, C++, Java, JavaScript
+- **Python libraraies:** faster-whisper, sounddevice, scipy, tavily-python, google-generativeai, google-genai, Subprocess
 - **Core Concept:** Hybrid local-classification + AI-fallback architecture
 
 ---
 
 ### Project Overview
 
-This project focuses on building a **hybrid voice-command assistant** — one that doesn't depend on an AI model for every single request.
+This project focuses on building a **hybrid voice assistant** — one that doesn't depend on an AI model for every single request.
 
 The system connects:
 - **Local command dictionaries** (`system_commands`, `create_command`, `Application`) — the canonical, controlled vocabulary the NN is trained to recognize
@@ -62,23 +53,15 @@ Main objectives of this project:
 - Build a controlled, extensible command vocabulary
 - Explore where local models are enough vs. where an LLM fallback adds real value
 
-This project is ideal for people who want to understand:
-- Local NLU/command classification pipelines
-- Hybrid local-model + LLM-fallback architecture
-- Safe AI-to-system interaction (no arbitrary shell execution)
-- Voice interface design
-- Sandboxed code execution across multiple languages
-
 ---
 
 ### Features
 
 - 🖥️ **System controls** — restart, lock, sleep, get IP address, hostname, system info
-- 📂 **Application control** — open VS Code, Terminal, Notepad, Task Manager (dictionary-driven, not freely generated)
+- 📂 **Application control** — open VS Code, Terminal, calculator, Notepad, Task Manager (dictionary-driven, not freely generated)
 - 📁 **File operations** — create, read/open, copy, move/rename (delete intentionally excluded)
-- 🌍 **Web** — open websites via the system/browser (e.g. "Open YouTube")
-- 🧮 **Calculator** — handle calculator-style requests locally (e.g. "Calculate 25 times 40")
-- 💻 **Programming execution** — run code in Python, C, C++, Java, JavaScript
+- 🌍 **Web** — open websites and do web search by (Tavily API)
+- 💻 **Programming execution** — run code in Python, C, C++, Java, JavaScript and other's by Gemini
 - 🤖 **Gemini fallback** — handles anything outside the known command vocabulary
 - 🔒 **No arbitrary AI-generated shell commands** — AI identifies intent only; execution is handled by validated local code
 
@@ -86,18 +69,30 @@ This project is ideal for people who want to understand:
 
 ### Requirements
 
-> *Not specified in the current project notes — add your actual setup here, e.g.:*
-
-- A Python (or equivalent) runtime for the local command layer
-- Access to the Gemini API (API key) for fallback intent discovery
-- A speech-to-text engine/library for voice input
-- OS-level permissions for system commands (restart, lock, sleep, etc.)
+- Python for executing command and full backend process
+- Gemini API (API key) for fallback intent discovery
+- Tavily API for web search results
+- A Dataset to train your ANN for making decisions
 
 ---
 
 ### Project Structure
-
-> *Not documented yet in the project notes — worth adding once the repo layout is finalized, e.g. separate modules for speech-to-text, the NN classifier, command dictionaries, the Gemini fallback client, and local command handlers.*
+ 
+```
+Saily/
+├── backend/
+│   ├── Actions/            # Local command handlers (executes validated logical actions)
+│   ├── Decision/           # Command classification / routing logic (NN vs Gemini)
+│   ├── Memory/             # State / context handling
+│   ├── Speech/             # Speech-to-text and voice input handling
+│   ├── __init__.py
+│   ├── main.py              # Backend entry point
+│   └── requirements.txt
+├── frontend/                # Frontend/UI layer
+├── .gitignore
+├── README.md
+└── saily_nn_dataset_v7.csv  # Training data for the NN command classifier
+```
 
 ---
 
@@ -108,20 +103,6 @@ This project is ideal for people who want to understand:
 - If it matches, the NN classifies it and a **local handler** executes it directly — no AI model call needed
 - If it doesn't match, the request is routed to **Gemini** to determine the user's intended function
 - The AI never directly issues OS commands — it identifies intent, and Saily's local code maps that intent to an approved implementation
-
----
-
-### Why These Are Used
-
-**Local NN classifier:**
-- Used for known, frequently-used commands so responses are instant and don't depend on an external API
-- Chosen over calling an LLM for *every* request because that would add unnecessary latency and cost for simple actions like "Open Notepad"
-- Keeps the vocabulary controlled — the NN only needs to recognize commands Saily explicitly defines, not the entirety of natural language
-
-**Gemini:**
-- Used as the intent-discovery layer for requests that fall outside the known command set
-- Chosen over expanding the NN indefinitely, since the NN can't realistically be trained to cover every possible phrasing or new function
-- Kept out of direct execution — Gemini determines *what* the user wants, not *how* it gets executed on the OS
 
 ---
 
@@ -175,11 +156,3 @@ This separation — AI identifies intent, local code controls execution — is w
 5️⃣ Gemini's output is treated as an intent, not a command — it's mapped to a **validated local function**, never executed as raw code
 
 6️⃣ The local handler performs the OS-level action and Saily responds to the user
-
----
-
-### Status
-
-**Saily is an active prototype under development.**
-
-The core direction is established — known commands go through the fast local NN path, unknown ones go through Gemini for intent discovery, and execution always stays behind a validated local handler. Planned next steps include expanding the application dictionary, adding confidence thresholds for classification, improving unknown-command detection, and building safer sandboxing for programming-code execution.
