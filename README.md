@@ -29,7 +29,7 @@ Instead of only working with local state, this app talks to a real backend (Supa
 
 
 ---
-
+<a id="tech-stack"></a>
 ## Tech Stack
 
 - **Frontend:** Flutter Web (Dart)
