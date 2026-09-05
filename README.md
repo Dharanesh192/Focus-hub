@@ -23,7 +23,7 @@ Instead of only working with local state, this app talks to a real backend (Supa
 - [Project Structure](#️project-structure)
 - [What is Offline-First Architecture?](#what-is-offline-first-architecture)
 - [Why These Are Used](#why-these-are-used)
-- [Security & Risks](#️security-&-risks)
+- [Security & Risks](#️security-and-risks)
 - [System Architecture](#️system-architecture)
 - [How It Works](#how-it-works)
 
@@ -139,7 +139,7 @@ Flutter-Todo-List/
 
 ---
 
-### Security & Risks
+### Security and Risks
  
 This project's Supabase **Project URL** and **anon (public) key** are visible in the client-side code and compiled JS bundle. This is intentional and expected — Supabase is designed so the anon key can be public, the same way a website's domain name isn't a secret. That said, it's worth understanding exactly what that does and doesn't expose.
  
