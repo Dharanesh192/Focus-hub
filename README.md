@@ -125,6 +125,41 @@ Flutter-Todo-List/
 
 ---
 
+## Why These Are Used
+ 
+**Supabase:**
+- Used as the **remote source of truth** for tasks once a user is logged in — every task eventually lands here so it's never lost even if local storage is cleared
+- **Realtime (WebSockets)** is used instead of manual polling so that a task added on your phone shows up instantly on your laptop, without refreshing
+- `REPLICA IDENTITY FULL` is required on the table specifically because Postgres's default replication only sends the primary key on `DELETE` events — full row data is needed so the app knows *which* task was deleted, not just its ID
+- Chosen over a custom backend because it gives Postgres + Auth + Realtime + Edge Functions in one place — ideal for a solo learning project where building your own backend from scratch isn't the point
+**Google OAuth:**
+- Used so a user's tasks can follow them across devices instead of being trapped in one browser's local storage
+- Chosen over building custom email/password auth because OAuth offloads password security, session handling, and account recovery to Google — letting the focus stay on Flutter itself, not reinventing auth
+- Supabase Auth sits in front of Google OAuth so the same `user.id` can be used consistently across the database, Realtime filters, and OneSignal targeting — one identity, three systems
+
+---
+
+## Security & Risks
+ 
+This project's Supabase **Project URL** and **anon (public) key** are visible in the client-side code and compiled JS bundle. This is intentional and expected — Supabase is designed so the anon key can be public, the same way a website's domain name isn't a secret. That said, it's worth understanding exactly what that does and doesn't expose.
+ 
+**What the anon key + URL alone cannot do:**
+- Cannot bypass Row Level Security (RLS) — that requires the `service_role` key, a completely separate and far more dangerous secret that must never appear in any client-side code
+- Cannot access the Supabase dashboard, billing, or project settings
+- Cannot run arbitrary SQL against the database
+
+**What the anon key *can* do — and why RLS is the real safeguard:**
+- Anyone with the anon key can call the REST API directly (no app required — a simple `curl` request works)
+- If Row Level Security is **disabled**, or a policy is too permissive (e.g. `USING (true)`), that request could read or modify **any row in the table**, not just the caller's own data
+- The actual security boundary is the RLS policy on the `focus_hub` table, which restricts every operation to `auth.uid() = "User_id"` — the key being public is irrelevant as long as this policy is correct
+
+**Other secrets in this project and how they're protected:**
+- The Supabase **service role key** is never used in this project's Flutter code at all — only the anon key, which is safe by design under RLS
+
+**Planned improvement:** migrating from the legacy anon key format to Supabase's newer `sb_publishable_...` key before the 2026 deprecation deadline — a value swap only, with no change to the security model above.
+
+---
+
 ## System Architecture
 
 ```
