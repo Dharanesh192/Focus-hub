@@ -16,16 +16,16 @@ Instead of only working with local state, this app talks to a real backend (Supa
 
 ## Table of Contents
  
-- [The tech stack used in this project](#tech-stack)
-- [Project Overview](#project-overview)
-- [Features offered](#️features)
-- [Requirements](#requirements)
-- [Project Structure](#️project-structure)
-- [What is Offline-First Architecture?](#what-is-offline-first-architecture)
-- [Why These Are Used](#why-these-are-used)
-- [Security & Risks](#️security-and-risks)
-- [System Architecture](#️system-architecture)
-- [How It Works](#how-it-works)
+- [🌐 The tech stack used in this project](#tech-stack)
+- [👀 Overview of the project](#project-overview)
+- [📢 What are the features are offered](#feature)
+- [🎯 Requirements](#requirements)
+- [🗂️ Project Structure](#project-structure)
+- [🤔 What is Offline-First Architecture?](#what-is-offline-first-architecture)
+- [🧐 Why These Are Used](#why-these-are-used)
+- [⚠️ Security & Risks](#security-and-risks)
+- [🏗️ System Architecture](#system-architecture)
+- [🕵 How It Works](#how-it-works)
 
 
 ---
