@@ -14,6 +14,22 @@ Instead of only working with local state, this app talks to a real backend (Supa
 
 ---
 
+## Table of Contents
+ 
+- [The tech stack used in this project](#-tech-stack)
+- [Project Overview](#-project-overview)
+- [Features offered](#️-features)
+- [Requirements](#-requirements)
+- [Project Structure](#️-project-structure)
+- [What is Offline-First Architecture?](#-what-is-offline-first-architecture)
+- [Why These Are Used](#-why-these-are-used)
+- [Security & Risks](#️-security--risks)
+- [System Architecture](#️-system-architecture)
+- [How It Works](#-how-it-works)
+
+
+---
+
 ## Tech Stack
 
 - **Frontend:** Flutter Web (Dart)
@@ -68,23 +84,6 @@ This project is ideal for people who want to understand:
 
 ---
 
-## How to Run the Code
-
-- Clone the repository:
-  ```
-  git clone https://github.com/Dharanesh192/Flutter-Todo-List.git
-  cd Flutter-Todo-List
-  ```
-- Get Flutter packages:
-  ```
-  flutter pub get
-  ```
-- Run locally with your own Supabase credentials replace the existing one with yours 
-
-- You may want to set up your own Supabase project and schema, and Google OAuth credentials to fully test all features locally.
-
----
-
 ## Requirements
 
 - Install **Flutter SDK** (stable channel)
@@ -132,6 +131,7 @@ Flutter-Todo-List/
 - **Realtime (WebSockets)** is used instead of manual polling so that a task added on your phone shows up instantly on your laptop, without refreshing
 - `REPLICA IDENTITY FULL` is required on the table specifically because Postgres's default replication only sends the primary key on `DELETE` events — full row data is needed so the app knows *which* task was deleted, not just its ID
 - Chosen over a custom backend because it gives Postgres + Auth + Realtime + Edge Functions in one place — ideal for a solo learning project where building your own backend from scratch isn't the point
+
 **Google OAuth:**
 - Used so a user's tasks can follow them across devices instead of being trapped in one browser's local storage
 - Chosen over building custom email/password auth because OAuth offloads password security, session handling, and account recovery to Google — letting the focus stay on Flutter itself, not reinventing auth
