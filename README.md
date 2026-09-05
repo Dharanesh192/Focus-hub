@@ -23,7 +23,7 @@ Instead of only working with local state, this app talks to a real backend (Supa
 - [Project Structure](#️project-structure)
 - [What is Offline-First Architecture?](#what-is-offline-first-architecture)
 - [Why These Are Used](#why-these-are-used)
-- [Security & Risks](#️security--risks)
+- [Security & Risks](#️security-&-risks)
 - [System Architecture](#️system-architecture)
 - [How It Works](#how-it-works)
 
