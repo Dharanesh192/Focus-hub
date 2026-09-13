@@ -2,8 +2,9 @@
 
 Flutter doesn't draw your UI directly from the Dart code you write. It goes through a series of transformations — each one turning a more abstract representation into a more concrete one — until it finally becomes pixels on the screen. Below is the step-by-step journey.
 
-```
-Code → Compiled Code → Executable → Runtime → Widget Tree → Element Tree → RenderObject Tree → Screen
+```mermaid
+        flowchart LR
+        a(Flutter Code) --> b(Flutter Compile) --> c(Executable) --> d(Runtime) --> e(Widget Tree) --> f(Element Tree) --> g(RenderObject Tree) --> h(Screen)
 ```
 
 ---
