@@ -18,7 +18,7 @@ When you run the flutter run command, Flutter takes your source `code` and compi
 
 ## Step 3: Compiled Code Becomes Executable Code
 
-The output of the compile step is `compiled code`, which is then turned into `executable code` — the actual binary/package that can be launched on a device or emulator. This is no longer "your code" in a readable sense; it's ready to run.
+The compiled code which is going to turned into `executable code` — the actual binary/package that can be launched on a device or emulator. 
 
 ## Step 4: The Runtime Takes Over
 
@@ -28,15 +28,19 @@ Once the executable is launched, the **Flutter runtime** kicks in. During the ru
 
 This is the first UI-related structure Flutter builds. It's a basic tree of `Element` nodes describing **what** the UI should look like — a blueprint, not the actual rendering.
 
-```
-        Element
-       /        \
-   Element     Element
-      |
-   Element
+```mermaid
+        flowchart TD
+        A(Root widget) --> B(Parent_widget_1)
+        A --> C(Parent_widget_2)
+        B --> D(Child_widget_1)
+        B --> E(Child_widget_2)
+        C --> F(Child_widget_1)
+        D --> G(Child_widget_1)
+
+   
 ```
 
-A widget tree is fundamentally **immutable and lightweight** — it's just configuration. Every time `build()` runs, a brand new widget tree is created. This is why widgets themselves are cheap to create and throw away.
+A widget tree is fundamentally **immutable and lightweight** — it's just configuration. Every time `build()` runs, a `brand new widget tree is created`. This is why widgets themselves are cheap to create and throw away.
 
 ## Step 6: The Widget Tree Becomes the Element Tree
 
@@ -44,16 +48,16 @@ This is a **runtime structure** of the widget tree, known as the **Element Tree*
 - The **child-parent relationship** between elements and their properties
 - The **lifecycle information** of each element (created, mounted, updated, disposed)
 
-Unlike the widget tree, the element tree is **persistent** — it survives across rebuilds. Flutter reuses existing elements when possible instead of recreating them, which is a big part of why Flutter's rebuilds are fast. The element tree acts as the glue between the widget tree (what to show) and the render tree (how to actually paint it).
-
 ## Step 7: The Element Tree Produces the RenderObject Tree
 
 Each element that needs to be drawn on screen is linked to a **RenderObject**. Together, these form the **RenderObject Tree**.
 
-```
-                        RenderView
-                       /    |     \      \
-                Heading  TextField  Paragraph  Image
+```mermaid
+        flowchart TD
+        a(Render object) --> b(Heading)
+        a --> c(Text_flied)
+        a --> d(Texts)
+        a --> e(Images)
 ```
 
 This tree performs and handles the **actual UI work**:
