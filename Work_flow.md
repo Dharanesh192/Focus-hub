@@ -74,18 +74,10 @@ Once the RenderObject Tree has computed layout and painting, Flutter composites 
 
 ## Quick Recap
 
-| Stage | What it represents | Mutability |
+| Stage | What it represents | What it does|
 |---|---|---|
-| Code | Human-written Dart | N/A |
-| Compiled/Executable Code | Machine-runnable binary | N/A |
-| Widget Tree | Blueprint / configuration ("what") | Immutable, rebuilt often |
-| Element Tree | Runtime structure, manages lifecycle | Persistent, reused across rebuilds |
-| RenderObject Tree | Layout + painting ("how") | Persistent, mutated in place |
+| Widget Tree | Blueprint / configuration ("what") | Immutable, flutter will rebuild this one each time it run the `.build()`|
+| Element Tree | Runtime structure, manages lifecycle | Reused across rebuilds flutter compare the existing one with the new widget description then decide to reuse/recreate in the element tree|
+| RenderObject Tree | Layout + painting ("how") |Mutated in place. In this stage were the actual laout and positioning will happend |
 
-**Core idea:** The Widget Tree describes *what* the UI should look like, the Element Tree manages *how it's connected and remembered* over time, and the RenderObject Tree actually *does the work* of measuring, positioning, and painting pixels.
-
-## Notes on Widget Tree Structure
-
-A widget tree is a basic hierarchy of one or more widget classes. It contains the configuration of each widget, what its children widgets contain, what its parent widget contains, and how this configuration ties together across the tree.
-
-As widget description is a `[widget of the widget tree]`, this can combine together to form the whole widget tree.
+**Core idea:** The `Widget Tree` describes *what* the UI should look like, the `Element Tree` manages *how it's connected and remembered* over time, and the `RenderObject Tree` actually *does the work* of measuring, positioning, and painting pixels.
