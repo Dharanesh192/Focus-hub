@@ -74,14 +74,14 @@ This project is ideal for people who want to understand:
 
 ### Work flow
 
-Flutter doesn't draw your UI directly from the Dart code you write. It goes through a series of transformations — each one turning a more abstract representation into a more concrete one — until it finally becomes pixels on the screen. Below is the step-by-step journey.
+- Flutter doesn't draw your UI directly from the Dart code you write. It goes through a series of transformations — each one turning a more abstract representation into a more concrete one — until it finally becomes pixels on the screen. Below is the step-by-step journey.
+- For more explanation check the [work flow.md](work_flow.md) in this repository
+
 
 ```mermaid
         flowchart LR
         a(Flutter Code) --> b(Flutter Compile) --> c(Executable) --> d(Runtime) --> e(Widget Tree) --> f(Element Tree) --> g(RenderObject Tree) --> h(Screen)
 ```
-
-For more explanation check the [work flow.md](workflow.md) in this repository
 ---
 
 ### Features
