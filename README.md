@@ -18,7 +18,7 @@ Instead of only working with local state, this app talks to a real backend (Supa
  
 - [🌐 The tech stack used in this project](#tech-stack)
 - [👀 Overview of the project](#project-overview)
-- [Flutter work flow](#work-flow)
+- [🧑‍💻Flutter work flow](#work-flow)
 - [📢 What are the features are offered](#features)
 - [🎯 Requirements](#requirements)
 - [🗂️ Project Structure](#project-structure)
@@ -81,6 +81,7 @@ Flutter doesn't draw your UI directly from the Dart code you write. It goes thro
         a(Flutter Code) --> b(Flutter Compile) --> c(Executable) --> d(Runtime) --> e(Widget Tree) --> f(Element Tree) --> g(RenderObject Tree) --> h(Screen)
 ```
 
+For more explanation check the [work flow.md](workflow.md) in this repository
 ---
 
 ### Features
