@@ -18,7 +18,8 @@ Instead of only working with local state, this app talks to a real backend (Supa
  
 - [🌐 The tech stack used in this project](#tech-stack)
 - [👀 Overview of the project](#project-overview)
-- [📢 What are the features are offered](#feature)
+- [Flutter work flow](#work-flow)
+- [📢 What are the features are offered](#features)
 - [🎯 Requirements](#requirements)
 - [🗂️ Project Structure](#project-structure)
 - [🤔 What is Offline-First Architecture?](#what-is-offline-first-architecture)
@@ -68,6 +69,17 @@ This project is ideal for people who want to understand:
 - OAuth authentication flows on the web
 - Environment variable handling in compiled web apps
 - Push notification delivery for a PWA
+
+---
+
+### Work flow
+
+Flutter doesn't draw your UI directly from the Dart code you write. It goes through a series of transformations — each one turning a more abstract representation into a more concrete one — until it finally becomes pixels on the screen. Below is the step-by-step journey.
+
+```mermaid
+        flowchart LR
+        a(Flutter Code) --> b(Flutter Compile) --> c(Executable) --> d(Runtime) --> e(Widget Tree) --> f(Element Tree) --> g(RenderObject Tree) --> h(Screen)
+```
 
 ---
 
