@@ -18,7 +18,7 @@ Instead of only working with local state, this app talks to a real backend (Supa
  
 - [🌐 The tech stack used in this project](#tech-stack)
 - [👀 Overview of the project](#project-overview)
-- [🧑‍💻Flutter work flow](#work-flow)
+- [🧑‍💻Flutter work flow](#Flutter_code_to_UI)
 - [📢 What are the features are offered](#features)
 - [🎯 Requirements](#requirements)
 - [🗂️ Project Structure](#project-structure)
