@@ -18,7 +18,7 @@ Instead of only working with local state, this app talks to a real backend (Supa
  
 - [🌐 The tech stack used in this project](#tech-stack)
 - [👀 Overview of the project](#project-overview)
-- [🧑‍💻Flutter work flow](#Flutter_code_to_UI)
+- [🧑‍💻Flutter work flow](#work-flow)
 - [📢 What are the features are offered](#features)
 - [🎯 Requirements](#requirements)
 - [🗂️ Project Structure](#project-structure)
@@ -75,7 +75,7 @@ This project is ideal for people who want to understand:
 ### Work flow
 
 - Flutter doesn't draw your UI directly from the Dart code you write. It goes through a series of transformations — each one turning a more abstract representation into a more concrete one — until it finally becomes pixels on the screen. Below is the step-by-step journey.
-- For more explanation check the [work flow.md](Work_flow.md) in this repository
+- For more explanation check the [work flow.md](Flutter_code_to_UI.md) in this repository
 
 
 ```mermaid
