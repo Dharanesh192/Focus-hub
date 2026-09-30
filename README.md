@@ -5,10 +5,10 @@ Focus Hub is a **Flutter Web PWA task management app**, built primarily as a lea
 What started as a simple to-do list evolved into a fully offline-first, cross-device synced task manager — backed by a real database, real-time WebSocket sync, Google authentication.
 
 This project demonstrates how a modern Flutter Web app can:
-- Work fully offline using local storage
-- Sync data live across multiple devices in real time
-- Authenticate users securely via OAuth
-- Deploy as a PWA with a proper CI/CD pipeline
+- Work fully offline using local storage.
+- Sync data live across multiple devices in real time.
+- Authenticate users securely via OAuth.
+- Deploy as a PWA with a proper CI/CD pipeline.
 
 Instead of only working with local state, this app talks to a real backend (Supabase) and keeps local and remote data in sync automatically — making it lightweight for the user (works offline) and reliable (auto-syncs when back online).
 
