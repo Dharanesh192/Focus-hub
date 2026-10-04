@@ -100,7 +100,7 @@ This project is ideal for people who want to understand:
 ### Requirements
 
 - Install **Flutter SDK** (stable channel)
-- A **Supabase** project (free tier works) — for the database, auth, and Realtime
+- Set up the [Supabase](https://github.com/Dharanesh192/Focus-hub/wiki/Supabase-Database-Setup) as in the **project wiki**
 - A **Google Cloud OAuth Client** — for Google Sign-In
 - (Optional) **Vercel** account — for deployment
 
