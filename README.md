@@ -106,7 +106,7 @@ This project is ideal for people who want to understand:
 - Install **Flutter SDK** (stable channel)
 - clone this repo
 - Set up the [Supabase](https://github.com/Dharanesh192/Focus-hub/wiki/Supabase-Database-Setup) as in the **project wiki**
-- Then for [Google Authentication](https://github.com/Dharanesh192/Focus-hub/wiki/Setting-up-the-Google-Authentication-Setup-(Google-Cloud---Supabase)) follow the **project** for Google Sign-In
+- Then for [Google Authentication](https://github.com/Dharanesh192/Focus-hub/wiki/Setting-up-the-Google-Authentication-Setup-(Google-Cloud---Supabase)) follow the **project wiki** for Google Sign-In
 - After all this you need to change some things like `redirect URL, Supabase URL` as I used in the code
 - For [Troubleshooting](https://github.com/Dharanesh192/Focus-hub/wiki/Troubleshooting)
 
