@@ -90,7 +90,7 @@ class _Homepagestate extends State<Homepage> {
   @override
   void initState() {
     super.initState(); // This function will be start first at main.dart file call
-    _authSubscription = _supabase.auth.onAuthStateChange.listen((data) async { // Get the auth state details that cantains only (event and session) in JSON 
+    _authSubscription = _supabase.auth.onAuthStateChange.listen((data) async { // Get the authentication state details that cantains only (event and session) in JSON 
     
       if(data.event == AuthChangeEvent.initialSession){
         if(data.session == null){
