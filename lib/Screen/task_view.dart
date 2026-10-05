@@ -334,7 +334,7 @@ class TaskviewState extends State<Taskview> with WidgetsBindingObserver {
                                 ? Colors.grey
                                 : filtertask[index].deadline!.difference(currentDate).inHours <= 96 && filtertask[index].deadline!.difference(currentDate).inHours > 0 && filtertask[index].isComplete == false
                                 ? Colors.orange
-                                : filtertask[index].deadline!.difference(currentDate).inHours > 0 || filtertask[index].isComplete == true
+                                : filtertask[index].deadline!.difference(currentDate).inHours > 96 || filtertask[index].isComplete == true
                                 ? Colors.green
                                 : Colors.red,
                             width: MediaQuery.of(context).size.width > 620 ? 2 : 1.5,
@@ -351,7 +351,7 @@ class TaskviewState extends State<Taskview> with WidgetsBindingObserver {
                                     ? Colors.grey
                                     : filtertask[index].deadline!.difference(currentDate).inHours <= 96 && filtertask[index].deadline!.difference(currentDate).inHours > 0 && filtertask[index].isComplete == false
                                     ? Colors.orange
-                                    : filtertask[index].deadline!.difference(currentDate).inHours > 0 || filtertask[index].isComplete == true
+                                    : filtertask[index].deadline!.difference(currentDate).inHours > 96 || filtertask[index].isComplete == true
                                     ? Colors.green
                                     : Colors.red,
                                 onPressed: () async {
