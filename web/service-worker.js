@@ -3,9 +3,10 @@
 // Handles: Offline caching + Push notifications
 // ─────────────────────────────────────────────
 
-const CACHE_NAME = 'focus-hub-v1';
+const CACHE_NAME = 'focus-hub-v2';
 
 const CACHE_URLS = [
+  // Source code of the app
   '/',
   '/index.html',
   '/flutter_bootstrap.js',
@@ -14,6 +15,11 @@ const CACHE_URLS = [
   '/favicon.png',
   '/icons/Icon-192.png',
   '/icons/Icon-512.png',
+  // Font configuration and Icons
+  '/assets/FontManifest.json',
+  '/assets/packages/cupertino_icons/assets/CupertinoIcons.ttf',
+  '/assets/fonts/MaterialIcons-Regular.otf',
+  '/assets/assets/fonts/Teko-Regular.ttf'
 ];
 
 // ─── INSTALL ──────────────────────────────────
