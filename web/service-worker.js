@@ -1,6 +1,6 @@
 'use strict';
 
-const CACHE_NAME = 'focus-hub-v3';
+const CACHE_NAME = 'focus-hub-v4';
 const MAX_RETRIES = 3;
 const FETCH_TIMEOUT_MS = 10000;
 const RETRY_DELAY_MS = 1000;
@@ -22,9 +22,9 @@ const OPTIONAL_URLS = [
   '/icons/Icon-192.png',
   '/icons/Icon-512.png',
   '/assets/FontManifest.json',
-  '/assets/MaterialIcons-Regular.otf',
-  '/assets/CupertinoIcons.ttf',
-  '/assets/fonts/Teko-Regular.ttf',
+  '/assets/packages/cupertino_icons/assets/CupertinoIcons.ttf',
+  '/assets/fonts/MaterialIcons-Regular.otf',
+  '/assets/assets/fonts/Teko-Regular.ttf'
 ];
 
 // --------------------------------------------------
