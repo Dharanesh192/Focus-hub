@@ -199,7 +199,57 @@ self.addEventListener('fetch', (event) => {
     return;
   }
 
-  // 3. Other resources: cache first, then network with retries.
+  // 3. Handle Google Fonts dynamically.
+  const isGoogleFont =
+  url.hostname === 'fonts.gstatic.com' &&
+  url.pathname.endsWith('.woff2');
+  
+  if (isGoogleFont) {
+  event.respondWith((async () => {
+    const cache = await caches.open(CACHE_NAME);
+  
+    // Check Cache Storage first.
+    const cached = await cache.match(request);
+  
+    if (cached) {
+      console.log('[SW] Google Font cache hit:', url.pathname);
+      return cached;
+    }
+  
+    // Fetch from Google if not cached.
+    try {
+      const response = await fetchWithRetry(request);
+  
+      // Cache successful, readable responses.
+      if (response.ok && response.type !== 'opaque') {
+        const responseForPage = response.clone();
+  
+        // Register the write while the fetch event is active.
+        const cacheTask = cache.put(request, response.clone());
+  
+        event.waitUntil(cacheTask);
+  
+        console.log('[SW] Google Font cached:', url.pathname);
+  
+        return responseForPage;
+      }
+  
+      return response;
+    } catch (error) {
+      console.error(
+        '[SW] Google Font unavailable:',
+        request.url,
+        error
+      );
+  
+      throw error;
+    }
+  })());
+  
+  return;
+  }
+
+  // 4. Other resources: cache first, then network with retries.
   event.respondWith((async () => {
     const cached = await caches.match(request);
 
