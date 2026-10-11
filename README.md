@@ -18,7 +18,7 @@ Instead of only working with local state, this app talks to a real backend (Supa
  
 - [🌐 The tech stack used in this project](#tech-stack)
 - [👀 Overview of the project](#project-overview)
-- [📝 Documentation](https://github.com/Dharanesh192/Focus-hub/wiki)
+- [📝 Documentation](#Documentation)
 - [📢 What are the features are offered](#features)
 - [🛠️ Requirements and project set up](#requirements)
 - [🗂️ Project Structure](#project-structure)
@@ -73,6 +73,13 @@ This project is ideal for people who want to understand:
 
 ---
 
+### Documentation
+I created a wiki for this with detailed explanation about the [Focus hub wiki](https://github.com/Dharanesh192/Focus-hub/wiki)
+- Configuration
+- User guide
+- project setup
+- Problems that I faced during the development
+---
 ### Features
 
 - ✅ Add, edit, delete, and complete tasks
