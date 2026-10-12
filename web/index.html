@@ -37,6 +37,17 @@
   <title>Focus hub</title>
   <link rel="manifest" href="manifest.json">
 
+  <!-- Onesignal setup -->
+  <script src="https://cdn.onesignal.com/sdks/web/v16/OneSignalSDK.page.js" defer></script>
+  <script>
+    window.OneSignalDeferred = window.OneSignalDeferred || [];
+    OneSignalDeferred.push(async function(OneSignal) {
+      await OneSignal.init({
+        appId: "200d4335-966f-4840-9346-8be89bf8a25d",
+      });
+    });
+  </script>
+
 </head>
 <body style = "background-color: #0D1117;">
   <a href="/privacy.html" 
