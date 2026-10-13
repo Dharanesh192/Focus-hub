@@ -142,24 +142,20 @@ self.addEventListener('fetch', (event) => {
 
   const url = new URL(request.url);
 
-  if (
-    url.hostname === 'cdn.onesignal.com' &&
-    url.pathname.startsWith('/sdks/web/')
-  ) {
+  if (url.hostname === 'onesignal.com' || url.hostname.endsWith('.onesignal.com')) {
     return;
   }
 
   // 1. Identify CanvasKit resources.
-  const isCanvasKit =
-    url.hostname === 'www.gstatic.com' &&
+  const isneeded =
+    (url.hostname === 'www.gstatic.com' &&
     url.pathname.includes('/flutter-canvaskit/') &&
-    (
-      url.pathname.endsWith('/canvaskit.js') ||
-      url.pathname.endsWith('/canvaskit.wasm')
-    );
+    (url.pathname.endsWith('/canvaskit.js') || url.pathname.endsWith('/canvaskit.wasm'))) ||
+    (url.hostname === 'fonts.gstatic.com' &&
+    url.pathname.endsWith('.woff2'));
 
-  // 2. CanvasKit: cache first, then retry the network.
-  if (isCanvasKit) {
+  // 2. CanvasKit and google font: cache first, then retry the network and handle Google Fonts dynamically.
+  if (isneeded) {
     event.respondWith((async () => {
       const cache = await caches.open(CACHE_NAME);
       const cached = await cache.match(request);
@@ -206,57 +202,7 @@ self.addEventListener('fetch', (event) => {
     return;
   }
 
-  // 3. Handle Google Fonts dynamically.
-  const isGoogleFont =
-  url.hostname === 'fonts.gstatic.com' &&
-  url.pathname.endsWith('.woff2');
-  
-  if (isGoogleFont) {
-  event.respondWith((async () => {
-    const cache = await caches.open(CACHE_NAME);
-  
-    // Check Cache Storage first.
-    const cached = await cache.match(request);
-  
-    if (cached) {
-      console.log('[SW] Google Font cache hit:', url.pathname);
-      return cached;
-    }
-  
-    // Fetch from Google if not cached.
-    try {
-      const response = await fetchWithRetry(request);
-  
-      // Cache successful, readable responses.
-      if (response.ok && response.type !== 'opaque') {
-        const responseForPage = response.clone();
-  
-        // Register the write while the fetch event is active.
-        const cacheTask = cache.put(request, response.clone());
-  
-        event.waitUntil(cacheTask);
-  
-        console.log('[SW] Google Font cached:', url.pathname);
-  
-        return responseForPage;
-      }
-  
-      return response;
-    } catch (error) {
-      console.error(
-        '[SW] Google Font unavailable:',
-        request.url,
-        error
-      );
-  
-      throw error;
-    }
-  })());
-  
-  return;
-  }
-
-  // 4. Other resources: cache first, then network with retries.
+  // 3. Other resources: cache first, then network with retries.
   event.respondWith((async () => {
     const cached = await caches.match(request);
 
