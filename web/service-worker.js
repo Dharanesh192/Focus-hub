@@ -1,6 +1,6 @@
 'use strict';
 
-const CACHE_NAME = 'focus-hub-v5';
+const CACHE_NAME = 'focus-hub-v3';
 const MAX_RETRIES = 3;
 const FETCH_TIMEOUT_MS = 10000;
 const RETRY_DELAY_MS = 1000;
@@ -141,12 +141,7 @@ self.addEventListener('fetch', (event) => {
   }
 
   const url = new URL(request.url);
-
-  if (url.hostname === 'onesignal.com' || url.hostname.endsWith('.onesignal.com')) {
-    return;
-  }
-
-  // 1. Identify CanvasKit resources.
+  // 1. Identify CanvasKit and google font resources.
   const isneeded =
     (url.hostname === 'www.gstatic.com' &&
     url.pathname.includes('/flutter-canvaskit/') &&
@@ -154,8 +149,11 @@ self.addEventListener('fetch', (event) => {
     (url.hostname === 'fonts.gstatic.com' &&
     url.pathname.endsWith('.woff2'));
 
+  if (!isneeded) {
+    return; // If the request if otherthen the canvaskit and google font it will be handle to the browser
+  }
   // 2. CanvasKit and google font: cache first, then retry the network and handle Google Fonts dynamically.
-  if (isneeded) {
+  else {
     event.respondWith((async () => {
       const cache = await caches.open(CACHE_NAME);
       const cached = await cache.match(request);
