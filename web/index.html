@@ -37,33 +37,6 @@
   <title>Focus hub</title>
   <link rel="manifest" href="manifest.json">
 
-  <!-- Onesignal setup -->
-  <script>
-    window.OneSignalDeferred = window.OneSignalDeferred || [];
-    console.log("[OneSignal] Deferred queue created");
-  </script>
-  
-  <script
-    src="https://cdn.onesignal.com/sdks/web/v16/OneSignalSDK.page.js"
-    defer
-    onload="console.log('[OneSignal] SDK script loaded')"
-    onerror="console.error('[OneSignal] SDK script failed to load')"
-  ></script>
-  
-  <script>
-    window.OneSignalDeferred.push(async function (OneSignal) {
-      try {
-        await OneSignal.init({
-          appId: "200d4335-966f-4840-9346-8be89bf8a25d"
-        });
-  
-        console.log("[OneSignal] Initialized successfully");
-      } catch (error) {
-        console.error("[OneSignal] Initialization failed:", error);
-      }
-    });
-  </script>
-
 </head>
 <body style = "background-color: #0D1117;">
   <a href="/privacy.html" 
