@@ -149,11 +149,7 @@ self.addEventListener('fetch', (event) => {
     (url.hostname === 'fonts.gstatic.com' &&
     url.pathname.endsWith('.woff2'));
 
-  if (!isneeded) {
-    return; // If the request if otherthen the canvaskit and google font it will be handle to the browser
-  }
-  // 2. CanvasKit and google font: cache first, then retry the network and handle Google Fonts dynamically.
-  else {
+  if (!isneeded) { // 2. CanvasKit and google font: cache first, then retry the network and handle Google Fonts dynamically.
     event.respondWith((async () => {
       const cache = await caches.open(CACHE_NAME);
       const cached = await cache.match(request);
