@@ -220,8 +220,8 @@ class TaskviewState extends State<Taskview> with WidgetsBindingObserver {
                 taskdata(); // Refresh the UI after deleting the task
               }
               
-            // Background sync to keep sembast consistent and Ensures Sembast stays consistent
-            unawaited(_functions.pullTasksFromSupabase()); // the (unawaited) is used to trigger the function in background without pausing the main thread.
+            // Realtime handlers above already apply insert/update/delete changes.
+            // Avoid immediate full pull here because it can race with just-written rows.
           },
         ).subscribe(); // Make the channel active and start listening for changes in the internet. If you don't call this method, the channel will not receive any events.
   }
