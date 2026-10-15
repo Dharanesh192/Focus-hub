@@ -52,7 +52,8 @@ class TaskviewState extends State<Taskview> with WidgetsBindingObserver {
         temp = tasks.where((task) => task.priority == 'Low').toList(); // Show only Low priority tasks
       } else {
         temp = tasks.where((v) => v.deadline != null && v.isComplete == false).toList(); // Show only incomplete tasks
-        temp.sort((a, b) =>   a.deadline!.compareTo(b.deadline!),);
+        temp.sort((a, b) =>   a.deadline!.compareTo(b.deadline!));
+        temp += tasks.where((n) => n.deadline != null && n.isComplete == false).toList();
       } 
       
       // Check the category is turned on / off
