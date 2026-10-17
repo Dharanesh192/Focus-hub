@@ -76,8 +76,8 @@ class TaskModel // This is a custom database for this project
       isSynced: map['isSynced'] ?? false,
       createdAt: DateTime.parse(map['createdAt']),
       updatedAt: DateTime.parse(map['updatedAt']),
-      complete_date: map['deadline'] != null 
-          ? .parse(map['deadline']) 
+      complete_date: map['complete_date'] != null 
+          ? DateTime.parse(map['complete_date']) 
           : null
     );
   }
@@ -95,7 +95,9 @@ class TaskModel // This is a custom database for this project
     isSynced: true, // always true — just came from Supabase
     createdAt: DateTime.parse(row['Created_date']),
     updatedAt: DateTime.parse(row['Updated_at']),
-    complete_date: row['Completed_date'] != null ? DateTime.parse(row['Completed_date']) : null
+    complete_date: row['Completed_date'] != null 
+        ? DateTime.parse(row['Completed_date']) 
+        : null
   );
 }
 

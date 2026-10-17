@@ -87,8 +87,7 @@ class _EdittaskState extends State<Edittask> {
     deadline: editselectedDate,
     createdAt: editcreated,
     isComplete: widget.completion,
-    updatedAt: DateTime.now(),
-    complete_date: null
+    updatedAt: DateTime.now()
   );
   try{
   await _repository.editTask(editTask);

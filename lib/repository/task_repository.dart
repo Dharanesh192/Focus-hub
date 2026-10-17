@@ -49,6 +49,7 @@ class TaskRepository
     task.userId = _supabase.auth.currentUser?.id; // To get the User ID
     task.isSynced = false; // Initial value is because it is not synced with supabase
     task.updatedAt = DateTime.now(); // Assign the current time of the task creatation or edited
+    task.complete_date = null; // The initial value of task null
 
     // Here the consider the [database] -> (Storage cabin) and the [task ID] -> (Folder name) and the [task data] -> (File inside the folder) and the [put] function is used to store the data.
     await _table.record(task.taskId).put(db, task.toMap());// It first ckeck that is they is any record with the given (task ID) if exist then edits it else create a new record with the given (task ID) and store the data in the database.
