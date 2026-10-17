@@ -10,7 +10,7 @@ class TaskModel // This is a custom database for this project
   bool isSynced;           // It is a binary value as (True/False)
   DateTime createdAt;      // It inputs are date and time
   DateTime updatedAt;      // It inputs are date and time
-  DateTime complete_date;      // It inputs are date and time
+  DateTime? complete_date; // It inputs are date and time
   
  
   TaskModel({ // This is constructor used to creat the object of the task model class
