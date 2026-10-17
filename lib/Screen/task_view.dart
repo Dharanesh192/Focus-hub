@@ -67,7 +67,8 @@ class TaskviewState extends State<Taskview> with WidgetsBindingObserver {
       filtertask = temp;
       pendingtasks = filtertask.where((task) => !task.isComplete).toList();
       completed = filtertask.where((task) => task.isComplete).toList();
-      completedtasks = completed.sort((a, b) => a.complete_date!.compareTo(b.complete_date!));
+      completed.sort((a, b) => a.complete_date!.compareTo(b.complete_date!));
+      completedtasks = completed
       filterwork = filter;
       searchword = keyword;
       categorycheck = iscategory;

@@ -40,7 +40,7 @@ class TaskModel // This is a custom database for this project
       'isSynced': isSynced,
       'createdAt': createdAt.toIso8601String(),
       'updatedAt': updatedAt.toIso8601String(),
-      'complete_date': updatedAt.toIso8601String(),
+      'complete_date': complete_date?.toIso8601String()
     };
   }
 
@@ -57,7 +57,7 @@ class TaskModel // This is a custom database for this project
       'is_complete': isComplete,
       'Created_date': createdAt.toIso8601String(),
       'Updated_at': updatedAt.toIso8601String(),
-      'Completed_date': complete_date.toIso8601String(),
+      'Completed_date': complete_date?.toIso8601String()
     }; // The variable name must match the column of the supabase table 
 }
 
@@ -95,7 +95,7 @@ class TaskModel // This is a custom database for this project
     isSynced: true, // always true — just came from Supabase
     createdAt: DateTime.parse(row['Created_date']),
     updatedAt: DateTime.parse(row['Updated_at']),
-    eadline: row['Completed_date'] != null ? DateTime.parse(row['Completed_date']) : null,
+    complete_date: row['Completed_date'] != null ? DateTime.parse(row['Completed_date']) : null
   );
 }
 
