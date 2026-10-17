@@ -21,7 +21,8 @@ class TaskviewState extends State<Taskview> with WidgetsBindingObserver {
   List<TaskModel> tasks = [];
   List<TaskModel> filtertask = [];
   List<TaskModel> pendingtasks = [];
-  List<TaskModel> completedtasks = [];  
+  List<TaskModel> completedtasks = [];
+  List<TaskModel> completed = [];
   DateTime currentDate = DateTime.now();
   String filterwork = 'All';
   String searchword = '';
@@ -52,7 +53,7 @@ class TaskviewState extends State<Taskview> with WidgetsBindingObserver {
         temp = tasks.where((task) => task.priority == 'Low').toList(); // Show only Low priority tasks
       } else {
         temp = tasks.where((v) => v.deadline != null && !v.isComplete).toList(); // Show only incomplete tasks with duodate
-        temp.sort((a, b) =>   a.deadline!.compareTo(b.deadline!));
+        temp.sort((a, b) => a.deadline!.compareTo(b.deadline!));
         temp += tasks.where((n) => n.deadline == null && !n.isComplete).toList(); // Add the incomplete tasks without duodate
       } 
       
@@ -65,7 +66,8 @@ class TaskviewState extends State<Taskview> with WidgetsBindingObserver {
 
       filtertask = temp;
       pendingtasks = filtertask.where((task) => !task.isComplete).toList();
-      completedtasks = filtertask.where((task) => task.isComplete).toList();
+      completed = filtertask.where((task) => task.isComplete).toList();
+      completedtasks = completed.sort((a, b) => a.complete_date!.compareTo(b.complete_date!);
       filterwork = filter;
       searchword = keyword;
       categorycheck = iscategory;
@@ -359,17 +361,7 @@ class TaskviewState extends State<Taskview> with WidgetsBindingObserver {
                                   setState(() {
                                     filtertask[index].isComplete = !filtertask[index].isComplete;
                                   });
-                                  await _functions.completeTask(TaskModel
-                                  (taskId: filtertask[index].taskId,
-                                    taskName: filtertask[index].taskName,
-                                    priority: filtertask[index].priority,
-                                    createdAt: filtertask[index].createdAt,
-                                    updatedAt: DateTime.now(),
-                                    deadline: filtertask[index].deadline,
-                                    category: filtertask[index].category,
-                                    isComplete: filtertask[index].isComplete,
-                                    isSynced: filtertask[index].isSynced,
-                                    userId: filtertask[index].userId)
+                                  await _functions.completeTask(filtertask[index] )
                                   );
                                   taskdata();
                                 },

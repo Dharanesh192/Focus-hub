@@ -39,6 +39,7 @@ class _AddtaskState extends State<Addtask> {
     deadline: selectedDate,
     createdAt: DateTime.now(),
     updatedAt: DateTime.now(),
+    complete_date: null
   );
   try {
     await _repository.addTask(newTask);
