@@ -128,11 +128,16 @@ class TaskRepository
 
   // Complete task
   Future<void> completeTask(TaskModel task) async {
-    
+
     final db = await dbcreation;
     task.updatedAt = DateTime.now();
     task.isSynced = false; // And sync as false to move it to the pending list
-    task.complete_date = task.complete_date != null ? null : DateTime.now();
+    if(task.complete_date == null){
+      task.complete_date = DateTime.now();
+    }
+    else{
+      task.complete_date = null;
+    }
 
     await _table.record(task.taskId).put(db, task.toMap()); // Update sembast 
 
