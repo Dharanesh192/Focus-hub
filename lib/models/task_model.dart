@@ -10,7 +10,9 @@ class TaskModel // This is a custom database for this project
   bool isSynced;           // It is a binary value as (True/False)
   DateTime createdAt;      // It inputs are date and time
   DateTime updatedAt;      // It inputs are date and time
-
+  DateTime complete_date;      // It inputs are date and time
+  
+ 
   TaskModel({ // This is constructor used to creat the object of the task model class
     required this.taskId,  // if they is required — (It is compelsory to give value)
     this.userId,           // if not - (It is a optional input value)
@@ -22,6 +24,7 @@ class TaskModel // This is a custom database for this project
     this.isSynced = false,     // Initially it has a (False) value 
     required this.createdAt,
     required this.updatedAt,
+    this.complete_date
   });
 
   // Map -> (is a collection of [key : value] pair) used to convert the (dart object) into (JSON format) for storing in sembast
@@ -37,6 +40,7 @@ class TaskModel // This is a custom database for this project
       'isSynced': isSynced,
       'createdAt': createdAt.toIso8601String(),
       'updatedAt': updatedAt.toIso8601String(),
+      'complete_date': updatedAt.toIso8601String(),
     };
   }
 
@@ -53,6 +57,7 @@ class TaskModel // This is a custom database for this project
       'is_complete': isComplete,
       'Created_date': createdAt.toIso8601String(),
       'Updated_at': updatedAt.toIso8601String(),
+      'Completed_date': complete_date.toIso8601String(),
     }; // The variable name must match the column of the supabase table 
 }
 
@@ -64,14 +69,16 @@ class TaskModel // This is a custom database for this project
       taskName: map['taskName'],
       priority: map['priority'],
       category: map['category'],
-      deadline: map['deadline'] != null 
-          ? DateTime.parse(map['deadline']) 
-          : null, // Converts the stored ISO 8601 string back into a DateTime object.
+      deadline: map['deadline'] != null // If the date is not null
+          ? DateTime.parse(map['deadline']) // Then converts the stored ISO 8601 string back into a DateTime object.
+          : null, // else store it as null as well
       isComplete: map['isComplete'] ?? false, // If the value is null, use false as the default value.
       isSynced: map['isSynced'] ?? false,
       createdAt: DateTime.parse(map['createdAt']),
       updatedAt: DateTime.parse(map['updatedAt']),
-
+      complete_date: map['deadline'] != null 
+          ? .parse(map['deadline']) 
+          : null
     );
   }
 
@@ -88,6 +95,7 @@ class TaskModel // This is a custom database for this project
     isSynced: true, // always true — just came from Supabase
     createdAt: DateTime.parse(row['Created_date']),
     updatedAt: DateTime.parse(row['Updated_at']),
+    eadline: row['Completed_date'] != null ? DateTime.parse(row['Completed_date']) : null,
   );
 }
 
