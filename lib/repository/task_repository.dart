@@ -24,7 +24,7 @@ class TaskRepository
   // Database initialization
   Future<Database> get dbcreation async {
     if (_db != null) {// check the database is created or not
-    return _db!; // If created retruns it otherwise move to the next if statement and that (_) means it is private variable and (!) means it can't a null value
+      return _db!; // If created retruns it otherwise move to the next if statement and that (_) means it is private variable and (!) means it can't a null value
     } 
 
     if (kIsWeb) // Check if the application is running in web browser or not
@@ -65,7 +65,6 @@ class TaskRepository
   // Edit Task
   Future<void> editTask(TaskModel task) async {// The parameter is in the TaskModel object format/type
     final db = await dbcreation;
-    
     task.isSynced = false; // sync become false to move it to the pending list of the task to be synced with the supabase
 
     await _table.record(task.taskId).put(db, task.toMap()); // The task is already exist in the database so it will edit the data in the database by accessing it by the task ID (Like a folder name)
@@ -183,8 +182,7 @@ class TaskRepository
     try { // ← wrap everything
       final db = await dbcreation; // Checking the database connection
 
-      final findcondition = Finder(filter: Filter.notNull('userId')); // condition to get every task with used ID
-      final localtask = await _table.find(db, finder : findcondition); // store all the local task
+      final localtask = await _table.find(db); // Include unsynced and guest tasks.
       final local = localtask.map((r) => TaskModel.fromMap(r.value)).toList(); // Convert it into dart object then list
 
       final response = await _supabase.from('focus_hub').select().eq('User_id', _supabase.auth.currentUser!.id); // geting all the records from the supabase
@@ -199,8 +197,12 @@ class TaskRepository
               await _table.record(onetask.taskId).put(db, onetask.toMap()); // Then update the local task
             }
           }
-          else{ // If not in the supabase delete it
-            deleteTask(row.taskId);
+          else if (row.isSynced &&
+              row.userId == _supabase.auth.currentUser!.id) {
+            // Do not remove new or failed-to-sync local tasks during a pull.
+            // Only a task known to be synced can be reconciled as remotely
+            // deleted.
+            await _table.record(row.taskId).delete(db);
           }
         } catch (e) {
           debugPrint('row parse failed: $e → row: $row'); // ← see which row fails

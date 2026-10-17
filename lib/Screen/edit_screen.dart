@@ -101,7 +101,7 @@ class _EdittaskState extends State<Edittask> {
     );
   }
   finally{
-    setState(() => _isLoading = false);
+    if (mounted) setState(() => _isLoading = false);
   }
 }
 
