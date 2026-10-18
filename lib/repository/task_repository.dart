@@ -84,7 +84,19 @@ class TaskRepository
     try { //Try we try-catch block to avoid crashing the application
 
       task.userId = _supabase.auth.currentUser!.id; // To get the User ID
-      await _supabase.from('focus_hub').upsert(task.toSupabaseMap());
+      final payload = task.toSupabaseMap();
+      debugPrint('Syncing task: ${task.taskId}');
+      debugPrint('isComplete: ${task.isComplete}');
+      debugPrint('complete_date: ${task.complete_date}');
+      debugPrint('Payload: $payload');
+
+      final response = await _supabase
+          .from('focus_hub')
+          .upsert(payload)
+          .select('Task_id, is_complete, Completed_date')
+          .single();
+
+      debugPrint('Supabase response: $response');
       task.isSynced = true; // If sync Success → update isSynced = true in local database (sembast)
 
       final db = await dbcreation; // db (local variable) is killed at end of function but _db (static variable) stays alive entire app lifetime (both db and _db are different)
@@ -132,12 +144,23 @@ class TaskRepository
     final db = await dbcreation;
     task.updatedAt = DateTime.now();
     task.isSynced = false; // And sync as false to move it to the pending list
-    if(task.complete_date == null){
-      task.complete_date = DateTime.now();
+
+    if (task.isComplete) {
+    task.complete_date = DateTime.now();
     }
-    else{
-      task.complete_date = null;
+    else {
+    task.complete_date = null;
     }
+
+    // Debug: verify the local value.
+    final saved = await _table.record(task.taskId).get(db);
+
+    debugPrint(
+      'Local completion: ${saved?['isComplete']}',
+    );
+    debugPrint(
+      'Local complete_date: ${saved?['complete_date']}',
+    );
 
     await _table.record(task.taskId).put(db, task.toMap()); // Update sembast 
 
@@ -178,52 +201,97 @@ class TaskRepository
   }
 
   Future<void> pullTasksFromSupabase() async {
-    if (_supabase.auth.currentUser == null) return;
-    try { // ← wrap everything
-      final db = await dbcreation; // Checking the database connection
+  if (_supabase.auth.currentUser == null) return;
 
-      final localtask = await _table.find(db); // Include unsynced and guest tasks.
-      final local = localtask.map((r) => TaskModel.fromMap(r.value)).toList(); // Convert it into dart object then list
+  try {
+    final db = await dbcreation;
 
-      final response = await _supabase.from('focus_hub').select().eq('User_id', _supabase.auth.currentUser!.id); // geting all the records from the supabase
-      final supabase = response.map((r) => TaskModel.fromSupabaseMap(r)).toList(); // Convert it into dart object then list
+    // 1. Get all local tasks from Sembast.
+    final localRecords = await _table.find(db);
 
-      
-      for (var row in local) { // Iterate with every task in local
-        try {
-          final onetask = supabase.firstWhereOrNull((task) => task.taskId == row.taskId); // Find the task in the supabase which is currently in loop
-          if (onetask != null){ // if find the task
-            if (onetask.updatedAt.isAfter(row.updatedAt)){ // Then check the task in both are updated in same date or the task in supabase updated after the local task
-              await _table.record(onetask.taskId).put(db, onetask.toMap()); // Then update the local task
-            }
-          }
-          else if (row.isSynced &&
-              row.userId == _supabase.auth.currentUser!.id) {
-            // Do not remove new or failed-to-sync local tasks during a pull.
-            // Only a task known to be synced can be reconciled as remotely
-            // deleted.
-            await _table.record(row.taskId).delete(db);
-          }
-        } catch (e) {
-          debugPrint('row parse failed: $e → row: $row'); // ← see which row fails
+    final localTasks = localRecords
+        .map((record) => TaskModel.fromMap(record.value))
+        .toList();
+
+    // 2. Fetch the current user's tasks from Supabase.
+    final response = await _supabase
+        .from('focus_hub')
+        .select()
+        .eq('User_id', _supabase.auth.currentUser!.id);
+
+    final remoteTasks = response
+        .map((row) => TaskModel.fromSupabaseMap(row))
+        .toList();
+
+    // 3. Reconcile local tasks with remote tasks.
+    for (final localTask in localTasks) {
+      try {
+        final remoteTask = remoteTasks.firstWhereOrNull(
+          (task) => task.taskId == localTask.taskId,
+        );
+
+        if (remoteTask == null) {
+          // Preserve local tasks missing from the remote response.
+          debugPrint(
+            'Preserving local task missing remotely: '
+            '${localTask.taskId}',
+          );
+          continue;
         }
-      }
 
-      for (var row in supabase){ // Iterate with every task in supabase
-        try{
-          final onetask = local.firstWhereOrNull((task) => task.taskId == row.taskId); // Find the task in the supabase which is currently in loop
-          if(onetask == null){ // if the task is not the local database then add it
-            await _table.record(row.taskId).put(db, row.toMap());
-          }
-        } catch(e) {
-          debugPrint('row parse failed: $e → row: $row'); // ← see which row fails
+        // Never overwrite a local task with pending changes.
+        if (!localTask.isSynced) {
+          debugPrint(
+            'Skipping remote overwrite; local task has pending changes: '
+            '${localTask.taskId}',
+          );
+          continue;
         }
-      }
 
-    } catch (e) {
-      debugPrint('pull failed: $e');
+        // Update the local task only when the remote version is newer.
+        if (remoteTask.updatedAt.isAfter(localTask.updatedAt)) {
+          await _table
+              .record(remoteTask.taskId)
+              .put(db, remoteTask.toMap());
+
+          debugPrint(
+            'Updated local task from Supabase: '
+            '${remoteTask.taskId}',
+          );
+        }
+      } catch (e, stackTrace) {
+        debugPrint('Local task reconciliation failed: $e');
+        debugPrint('$stackTrace');
+      }
     }
+
+    // 4. Add remote tasks that do not exist locally.
+    for (final remoteTask in remoteTasks) {
+      try {
+        final localTask = localTasks.firstWhereOrNull(
+          (task) => task.taskId == remoteTask.taskId,
+        );
+
+        if (localTask == null) {
+          await _table
+              .record(remoteTask.taskId)
+              .put(db, remoteTask.toMap());
+
+          debugPrint(
+            'Added remote task to local database: '
+            '${remoteTask.taskId}',
+          );
+        }
+      } catch (e, stackTrace) {
+        debugPrint('Remote task reconciliation failed: $e');
+        debugPrint('$stackTrace');
+      }
+    }
+  } catch (e, stackTrace) {
+    debugPrint('Pull failed: $e');
+    debugPrint('$stackTrace');
   }
+}
 
   // Get the guset task
   Future<bool> guesttask()async {

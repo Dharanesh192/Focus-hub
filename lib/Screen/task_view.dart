@@ -363,7 +363,8 @@ class TaskviewState extends State<Taskview> with WidgetsBindingObserver {
                                     filtertask[index].isComplete = !filtertask[index].isComplete;
                                   });
                                   await _functions.completeTask(filtertask[index]);
-                                  taskdata();
+                                  if (!mounted) return;    
+                                  await taskdata();
                                 },
                               ),
                               const SizedBox(width: 10),
