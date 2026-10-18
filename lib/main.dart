@@ -99,8 +99,8 @@ class _Homepagestate extends State<Homepage> {
 
         Future.delayed(Duration(milliseconds: 300), () async{
           if(!mounted) return;
-          await _repository.syncPendingTasks();
           await _repository.pullTasksFromSupabase();
+          await _repository.syncPendingTasks();
           await _taskview.currentState?.taskdata();
           _taskview.currentState?.listenRealtime();
         });

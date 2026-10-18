@@ -1,6 +1,6 @@
 'use strict';
 
-const CACHE_NAME = 'focus-hub-v6';
+const CACHE_NAME = 'focus-hub-v7';
 const MAX_RETRIES = 3;
 const FETCH_TIMEOUT_MS = 10000;
 const RETRY_DELAY_MS = 1000;
@@ -99,7 +99,7 @@ self.addEventListener('install', (event) => {
       })
     );
 
-    console.log('[SW] Installation caching completed. with debug statements');
+    console.log('[SW] Installation caching completed.');
 
     await self.skipWaiting();
   })());
@@ -125,7 +125,7 @@ self.addEventListener('activate', (event) => {
 
     await self.clients.claim();
 
-    console.log('[SW] Activated:', CACHE_NAME);
+    console.log('[SW] Activated:', CACHE_NAME,'with corrected logic for handling task sync');
   })());
 });
 

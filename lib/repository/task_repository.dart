@@ -84,25 +84,14 @@ class TaskRepository
     try { //Try we try-catch block to avoid crashing the application
 
       task.userId = _supabase.auth.currentUser!.id; // To get the User ID
-      final payload = task.toSupabaseMap();
-      debugPrint('Syncing task: ${task.taskId}');
-      debugPrint('isComplete: ${task.isComplete}');
-      debugPrint('complete_date: ${task.complete_date}');
-      debugPrint('Payload: $payload');
-
-      final response = await _supabase
-          .from('focus_hub')
-          .upsert(payload)
-          .select('Task_id, is_complete, Completed_date')
-          .single();
-
-      debugPrint('Supabase response: $response');
+      await _supabase.from('focus_hub').upsert(task.toSupabaseMap());
       task.isSynced = true; // If sync Success → update isSynced = true in local database (sembast)
 
       final db = await dbcreation; // db (local variable) is killed at end of function but _db (static variable) stays alive entire app lifetime (both db and _db are different)
       await _table.record(task.taskId).put(db, task.toMap()); // Updating the value
 
     } catch (e) {
+      task.isSynced = false;
       debugPrint('Sync failed: $e'); // isSynced stays false — will retry later and tells what goes wrong
     }
  
@@ -152,16 +141,6 @@ class TaskRepository
     task.complete_date = null;
     }
 
-    // Debug: verify the local value.
-    final saved = await _table.record(task.taskId).get(db);
-
-    debugPrint(
-      'Local completion: ${saved?['isComplete']}',
-    );
-    debugPrint(
-      'Local complete_date: ${saved?['complete_date']}',
-    );
-
     await _table.record(task.taskId).put(db, task.toMap()); // Update sembast 
 
     final connectivity = await Connectivity().checkConnectivity();
@@ -200,90 +179,74 @@ class TaskRepository
     */
   }
 
-  Future<void> pullTasksFromSupabase() async {
-  if (_supabase.auth.currentUser == null) return;
+Future<void> pullTasksFromSupabase() async {
+  final currentUser = _supabase.auth.currentUser;
+
+  if (currentUser == null) return;
 
   try {
     final db = await dbcreation;
 
-    // 1. Get all local tasks from Sembast.
+    // Get all local tasks
     final localRecords = await _table.find(db);
 
     final localTasks = localRecords
         .map((record) => TaskModel.fromMap(record.value))
         .toList();
 
-    // 2. Fetch the current user's tasks from Supabase.
+    final localTasksById = {
+      for (final task in localTasks) task.taskId: task,
+    };
+
+    // Fetch tasks from Supabase
     final response = await _supabase
         .from('focus_hub')
         .select()
-        .eq('User_id', _supabase.auth.currentUser!.id);
+        .eq('User_id', currentUser.id);
 
     final remoteTasks = response
-        .map((row) => TaskModel.fromSupabaseMap(row))
+        .map<TaskModel>((row) => TaskModel.fromSupabaseMap(row))
         .toList();
 
-    // 3. Reconcile local tasks with remote tasks.
-    for (final localTask in localTasks) {
-      try {
-        final remoteTask = remoteTasks.firstWhereOrNull(
-          (task) => task.taskId == localTask.taskId,
-        );
-
-        if (remoteTask == null) {
-          // Preserve local tasks missing from the remote response.
-          debugPrint(
-            'Preserving local task missing remotely: '
-            '${localTask.taskId}',
-          );
-          continue;
-        }
-
-        // Never overwrite a local task with pending changes.
-        if (!localTask.isSynced) {
-          debugPrint(
-            'Skipping remote overwrite; local task has pending changes: '
-            '${localTask.taskId}',
-          );
-          continue;
-        }
-
-        // Update the local task only when the remote version is newer.
-        if (remoteTask.updatedAt.isAfter(localTask.updatedAt)) {
-          await _table
-              .record(remoteTask.taskId)
-              .put(db, remoteTask.toMap());
-
-          debugPrint(
-            'Updated local task from Supabase: '
-            '${remoteTask.taskId}',
-          );
-        }
-      } catch (e, stackTrace) {
-        debugPrint('Local task reconciliation failed: $e');
-        debugPrint('$stackTrace');
-      }
-    }
-
-    // 4. Add remote tasks that do not exist locally.
     for (final remoteTask in remoteTasks) {
       try {
-        final localTask = localTasks.firstWhereOrNull(
-          (task) => task.taskId == remoteTask.taskId,
-        );
+        final localTask = localTasksById[remoteTask.taskId];
 
+        // CASE 1: Task exists in Supabase but not locally.
+        // Add the remote task to the local database.
         if (localTask == null) {
-          await _table
-              .record(remoteTask.taskId)
-              .put(db, remoteTask.toMap());
-
-          debugPrint(
-            'Added remote task to local database: '
-            '${remoteTask.taskId}',
-          );
+          await _table.record(remoteTask.taskId).put(db, remoteTask.toMap());
+          continue;
         }
+
+        // CASE 2: Local task has pending changes.
+        // Leave it for syncPendingTasks().
+        if (!localTask.isSynced) {
+          continue;
+        }
+
+        // CASE 3: Supabase task is newer than the local task.
+        // Update the local database with the remote version.
+        if (remoteTask.updatedAt.isAfter(localTask.updatedAt)) {
+          await _table.record(remoteTask.taskId).put(db, remoteTask.toMap());
+          continue;
+        }
+
+        // CASE 4: Local task is newer than the Supabase task.
+        // Mark it as unsynced so syncPendingTasks() uploads it.
+        if (localTask.updatedAt.isAfter(remoteTask.updatedAt)) {
+          localTask.isSynced = false;
+          await _table.record(localTask.taskId).put(db, localTask.toMap());
+          continue;
+        }
+
+        // CASE 5: Equal timestamps — intentionally omitted.
+        // CASE 6: Local task missing from Supabase — intentionally omitted.
+
       } catch (e, stackTrace) {
-        debugPrint('Remote task reconciliation failed: $e');
+        debugPrint(
+          'Task reconciliation failed (${remoteTask.taskId}): $e',
+        );
         debugPrint('$stackTrace');
       }
     }
