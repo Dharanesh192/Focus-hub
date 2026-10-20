@@ -299,6 +299,23 @@ Future<void> pullTasksFromSupabase() async {
   Future<void> livedelete(String task) async{
     final db = await dbcreation;
     await _table.record(task).delete(db); // Delete the task from the local database which is not in the supabase
-  }   
+  }  
+
+  Future<void> debugSembastTasks() async {
+  final db = await dbcreation;
+
+  final records = await _table.find(db);
+
+  debugPrint('========== SEMBAST DEBUG ==========');
+  debugPrint('Total local tasks: ${records.length}');
+
+  for (final record in records) {
+    debugPrint('Key: ${record.key}');
+    debugPrint('Task: ${record.value['Task_name'] ?? record.value['taskName']}');
+    debugPrint('Synced: ${record.value['isSynced']}');
+  }
+
+  debugPrint('===================================');
+} 
   
 }

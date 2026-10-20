@@ -35,6 +35,14 @@ class TaskviewState extends State<Taskview> with WidgetsBindingObserver {
 
   Future<void> taskdata() async {
     tasks = await _functions.getAllTasks();
+
+    // DEBUG: Read and print the actual Sembast records.
+    await _functions.debugSembastTasks();
+    debugPrint('Tasks loaded for dashboard: ${tasks.length}');
+    for (final task in tasks) {
+      debugPrint('Dashboard task: ${task.taskName} | ID: ${task.taskId}');
+    }
+
     filter(filterwork, searchword, categorycheck);
     WidgetsBinding.instance.scheduleFrame();
   }
@@ -226,7 +234,7 @@ class TaskviewState extends State<Taskview> with WidgetsBindingObserver {
                else if (eventType == PostgresChangeEvent.delete && oldrecord.isNotEmpty) 
               {
                 final taskid = oldrecord['Task_id'] as String; // Change it into the object type
-                debugPrint('Deleted task: and $taskid'); // Print the deleted task name in the console for debugging purposes
+                debugPrint('Deleted task: $taskid'); // Print the deleted task name in the console for debugging purposes
                 await _functions.livedelete(taskid); // Pass the object to this function and wait for it to complete
                 if (!mounted) return;
                 taskdata(); // Refresh the UI after deleting the task
