@@ -265,7 +265,6 @@ class TaskviewState extends State<Taskview> with WidgetsBindingObserver {
   void initState() { // This is used call the mentioned functions when the app is started or resumed from background
     super.initState();
     WidgetsBinding.instance.addObserver(this);
-    taskdata();
     _midnighttimer(); // Start the midnight timer
     _setupVisibilityListener();
     currentDate = DateTime.now(); // Initialize currentDate with the current date
@@ -487,8 +486,7 @@ class TaskviewState extends State<Taskview> with WidgetsBindingObserver {
                                       final removedtask = filtertask[index];
                                       setState(() {
                                         filtertask.removeAt(index); // Remove the task from the list
-                                        pendingtasks = filtertask.where((task) => !task.isComplete).toList();
-                                        completedtasks = filtertask.where((task) => task.isComplete).toList();
+                                        taskdata();
                                       });
                                       try {
                                         await _functions.deleteTask(removedtask.taskId); // Delete the task from the database
