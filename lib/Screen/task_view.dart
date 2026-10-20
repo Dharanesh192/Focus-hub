@@ -22,7 +22,6 @@ class TaskviewState extends State<Taskview> with WidgetsBindingObserver {
   List<TaskModel> filtertask = [];
   List<TaskModel> pendingtasks = [];
   List<TaskModel> completedtasks = [];
-  List<TaskModel> completed = [];
   DateTime currentDate = DateTime.now();
   String filterwork = 'All';
   String searchword = '';
@@ -69,10 +68,9 @@ class TaskviewState extends State<Taskview> with WidgetsBindingObserver {
         temp = temp.where((task) => task.taskName.toLowerCase().contains(keyword.toLowerCase())).toList();
       }
 
-      filtertask = temp;
-      pendingtasks = filtertask.where((task) => !task.isComplete).toList();
-      completed = filtertask.where((task) => task.isComplete).toList();
-      completed.sort((a, b) {
+      pendingtasks = temp.where((task) => !task.isComplete).toList();
+      completedtasks = temp.where((task) => task.isComplete).toList();
+      completedtasks.sort((a, b) {
         final dateA = a.complete_date; // Store the current task completed date represented by a
         final dateB = b.complete_date; // Store the current task completed date represented by b
 
@@ -82,13 +80,7 @@ class TaskviewState extends State<Taskview> with WidgetsBindingObserver {
 
         return dateB.compareTo(dateA); // Place the task at first that's completed date is recent
       });
-      for (final task in completed) {
-        debugPrint(
-          '${task.taskName} | '
-          'Completed: ${task.complete_date} | '
-        );
-      }
-      completedtasks = completed;
+      filtertask = [...pendingtasks, ...completedtasks];
       filterwork = filter;
       searchword = keyword;
       categorycheck = iscategory;
