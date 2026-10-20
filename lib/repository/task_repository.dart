@@ -159,9 +159,9 @@ class TaskRepository
       SortOrder('isComplete',true), // -> sort by isComplete in ascending order (false first then true).
       SortOrder('createdAt',false),
     ],); 
-    /* Finder is like a query/condition used in find to get the data as per given query/condition.
+    /* Finder -> is like a query/condition used in find to get the data as per given query/condition.
     It like a variable used to store the query/condition */
-    /* SortOrder is the condition used for sorting.
+    /* SortOrder -> is the condition used for sorting.
     SortOrder(field_name, ascending)
     Field_name -> can be any field in the TaskModel 
     Ascending -> It is a binary value:[true for ascending], [false for descending] */
@@ -308,13 +308,6 @@ Future<void> pullTasksFromSupabase() async {
 
   debugPrint('========== SEMBAST DEBUG ==========');
   debugPrint('Total local tasks: ${records.length}');
-
-  for (final record in records) {
-    debugPrint('Key: ${record.key}');
-    debugPrint('Task: ${record.value['Task_name'] ?? record.value['taskName']}');
-    debugPrint('Synced: ${record.value['isSynced']}');
-  }
-
   debugPrint('===================================');
 } 
   

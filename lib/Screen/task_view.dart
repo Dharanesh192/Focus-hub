@@ -39,9 +39,6 @@ class TaskviewState extends State<Taskview> with WidgetsBindingObserver {
     // DEBUG: Read and print the actual Sembast records.
     await _functions.debugSembastTasks();
     debugPrint('Tasks loaded for dashboard: ${tasks.length}');
-    for (final task in tasks) {
-      debugPrint('Dashboard task: ${task.taskName} | ID: ${task.taskId}');
-    }
 
     filter(filterwork, searchword, categorycheck);
     WidgetsBinding.instance.scheduleFrame();
@@ -85,6 +82,12 @@ class TaskviewState extends State<Taskview> with WidgetsBindingObserver {
 
         return dateB.compareTo(dateA); // Place the task at first that's completed date is recent
       });
+      for (final task in completed) {
+        debugPrint(
+          '${task.taskName} | '
+          'Completed: ${task.complete_date} | '
+        );
+      }
       completedtasks = completed;
       filterwork = filter;
       searchword = keyword;

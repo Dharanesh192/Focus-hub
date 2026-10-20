@@ -49,7 +49,7 @@
       window.addEventListener('load', () => {
         navigator.serviceWorker
           .register('/service-worker.js')
-          .then((reg) => console.log('[SW] Registered, scope:', reg.scope, 'and added the debug statement'))
+          .then((reg) => console.log('[SW] Registered, scope:', reg.scope, 'and added the debug statement for sorting'))
           .catch((err) => console.error('[SW] Registration failed:', err));
       });
     }

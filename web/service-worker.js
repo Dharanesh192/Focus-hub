@@ -1,6 +1,6 @@
 'use strict';
 
-const CACHE_NAME = 'focus-hub-v8';
+const CACHE_NAME = 'focus-hub-v5';
 const MAX_RETRIES = 3;
 const FETCH_TIMEOUT_MS = 10000;
 const RETRY_DELAY_MS = 1000;
