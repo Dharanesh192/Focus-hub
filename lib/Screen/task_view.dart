@@ -478,7 +478,6 @@ class TaskviewState extends State<Taskview> with WidgetsBindingObserver {
                                       final removedtask = filtertask[index];
                                       setState(() {
                                         filtertask.removeAt(index); // Remove the task from the list
-                                        taskdata();
                                       });
                                       try {
                                         await _functions.deleteTask(removedtask.taskId); // Delete the task from the database

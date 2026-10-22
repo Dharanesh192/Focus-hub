@@ -167,11 +167,11 @@ class TaskRepository
     Ascending -> It is a binary value:[true for ascending], [false for descending] */
     final records = await _table.find(db, finder: condition); // -> FInd the record as per the given finder condition in database and store it in the [records variable]
     return records.map((r) => TaskModel.fromMap(r.value)).toList(); // The [records] contain key value pair and (all the values we want are stored in the value not in the key only store the task ID so we need to convert the value)into the taskModel object
-    /*      |      |    |           |             |         |
-           \|/    \|/  \|/         \|/           \|/       \|/
-        Contain   It's  This       The function to call    Convert the result 
-        Key-value like  represent                          into the list of 
-        pair      a     the variable [records].                      taskModel object
+    /*      |      |    |           |             |          |
+           \|/    \|/  \|/         \|/           \|/        \|/
+        Contain   It's  This       The is a function call   Convert the result 
+        Key-value like  represent                           into the list of 
+        pair      a     the variable [records].             taskModel object
                   for-loop 
                   it create a iterable 
                   that repectly call 
