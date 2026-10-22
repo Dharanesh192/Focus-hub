@@ -247,7 +247,6 @@ class TaskviewState extends State<Taskview> with WidgetsBindingObserver {
   @override
   void initState() { // This is used call the mentioned functions when the app is started or resumed from background
     super.initState();
-    taskdata();
     WidgetsBinding.instance.addObserver(this);
     _midnighttimer(); // Start the midnight timer
     _setupVisibilityListener();
