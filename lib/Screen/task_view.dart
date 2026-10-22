@@ -70,16 +70,7 @@ class TaskviewState extends State<Taskview> with WidgetsBindingObserver {
 
       pendingtasks = temp.where((task) => !task.isComplete).toList();
       completedtasks = temp.where((task) => task.isComplete).toList();
-      completedtasks.sort((a, b) {
-        final dateA = a.complete_date; // Store the current task completed date represented by a
-        final dateB = b.complete_date; // Store the current task completed date represented by b
-
-        if (dateA == null && dateB == null) return 0; // if both task didn't have completed date then place then at the last
-        if (dateA == null) return 1; // if the first task has no completed date place it after the second task
-        if (dateB == null) return -1; // if the second task has no completed date place it after the first task
-
-        return dateB.compareTo(dateA); // Place the task at first that's completed date is recent
-      });
+      completedtasks.sort((a, b) => b.complete_date.compareTo(a.complete_date));
       filtertask = [...pendingtasks, ...completedtasks];
       filterwork = filter;
       searchword = keyword;
