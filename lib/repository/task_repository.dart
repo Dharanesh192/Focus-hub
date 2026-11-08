@@ -128,13 +128,11 @@ class TaskRepository
       }
       catch(e){ // Unable to delete in Supabase
         await _deleteStore.record(taskId).put(db, taskId); // Store the undeleted record in this table
-        debugPrint('Task added to delete database');
         await _table.record(taskId).delete(db); // Delete that task from sembast
       }
     }
     else{ // Unable to delete in Supabase
         await _deleteStore.record(taskId).put(db, taskId); // Store the undeleted record in this table
-        debugPrint('Task added to delete database');
         await _table.record(taskId).delete(db); // Delete that task from sembast
     }
   }
@@ -142,16 +140,15 @@ class TaskRepository
   // Delete offline tasks from Supabase when internet reconnects
   Future<void> Deleteoffline() async {
     final db = await dbcreation;
-    // Retrieve pending deletion records
+    // Retrieve pending deletion records in the delete table
     final records = await _deleteStore.find(db);
     for (final record in records) {
-      final taskId = record.value;
+      final taskId = record.value; // Get the task ID for one task at a time
       try {
         // Check whether task exists in Supabase
         final existingTask = await _supabase.from('focus_hub').select('Task_id').eq('Task_id', taskId);
-        if (existingTask.isNotEmpty) {
+        if (existingTask.isNotEmpty) { // If the task exist then delete it
           final deletedRows = await _supabase.from('focus_hub').delete().eq('Task_id', taskId).select('Task_id');
-          debugPrint('Task $taskId is deleted in the supabase');
           if (deletedRows.isEmpty) {
             throw Exception('Supabase did not confirm deletion');
           }
