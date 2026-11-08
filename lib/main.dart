@@ -162,6 +162,7 @@ class _Homepagestate extends State<Homepage> {
     });
     _connectivitySubscription = Connectivity().onConnectivityChanged.listen((result) async {
       if (result != ConnectivityResult.none && isLoggedIn) { // get the status of the internet if internet is connected and user logged in
+        await _repository.Deleteoffline();
         _repository.syncPendingTasks();
       }
     });
