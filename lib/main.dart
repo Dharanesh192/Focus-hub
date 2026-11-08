@@ -93,18 +93,14 @@ class _Homepagestate extends State<Homepage> {
     _authSubscription = _supabase.auth.onAuthStateChange.listen((data) async { // Get the authentication state details that cantains only (event and session) in JSON 
     
       if(data.event == AuthChangeEvent.initialSession){
-        if(data.session == null){
-          return;
-          }
-
-        Future.delayed(Duration(milliseconds: 300), () async{
-          if(!mounted) return;
-          await _taskview.currentState?.taskdata();
-          await _repository.pullTasksFromSupabase();
-          await _repository.syncPendingTasks();
-          await _taskview.currentState?.taskdata();
-          _taskview.currentState?.listenRealtime();
-        });
+        if(data.session == null){  return; }
+        if(!mounted) return;
+        await _taskview.currentState?.taskdata();
+        await _repository.Deleteoffline();
+        await _repository.pullTasksFromSupabase();
+        await _repository.syncPendingTasks();
+        await _taskview.currentState?.taskdata();
+        _taskview.currentState?.listenRealtime();
         return;
       }
 
