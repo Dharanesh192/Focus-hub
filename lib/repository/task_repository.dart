@@ -128,11 +128,13 @@ class TaskRepository
       }
       catch(e){ // Unable to delete in Supabase
         await _deleteStore.record(taskId).put(db, taskId); // Store the undeleted record in this table
+        debugPrint('Task added to delete database');
         await _table.record(taskId).delete(db); // Delete that task from sembast
       }
     }
     else{ // Unable to delete in Supabase
         await _deleteStore.record(taskId).put(db, taskId); // Store the undeleted record in this table
+        debugPrint('Task added to delete database');
         await _table.record(taskId).delete(db); // Delete that task from sembast
     }
   }
@@ -149,6 +151,7 @@ class TaskRepository
         final existingTask = await _supabase.from('focus_hub').select('Task_id').eq('Task_id', taskId);
         if (existingTask.isNotEmpty) {
           final deletedRows = await _supabase.from('focus_hub').delete().eq('Task_id', taskId).select('Task_id');
+          debugPrint('Task $taskId is deleted in the supabase');
           if (deletedRows.isEmpty) {
             throw Exception('Supabase did not confirm deletion');
           }
