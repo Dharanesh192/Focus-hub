@@ -57,7 +57,7 @@ class TaskRepository
 
     // Check internet connection and sync it the supabase
     final connectivity = await Connectivity().checkConnectivity(); //  Create a variable for Connectivity function
-    if (!connectivity.contains(ConnectivityResult.none)) { // If the internet connected
+    if (connectivity != ConnectivityResult.none) { // If the internet connected
       await _syncTask(task); // It call the Synctask function
     }
  
@@ -71,7 +71,7 @@ class TaskRepository
     await _table.record(task.taskId).put(db, task.toMap()); // The task is already exist in the database so it will edit the data in the database by accessing it by the task ID (Like a folder name)
 
     final connectivity = await Connectivity().checkConnectivity(); // When the function closed it will delete this variable from the memory so we need to create variable it again to check the internet connection
-    if (!connectivity.contains(ConnectivityResult.none)) {
+    if (connectivity != ConnectivityResult.none) {
       await _syncTask(task); // Sync to the supabase if internet available
     }
  
@@ -120,7 +120,7 @@ class TaskRepository
     Future<void> deleteTask(String taskId) async { // In this function it comes with a task ID 
     final db = await dbcreation;
     final connectivity = await Connectivity().checkConnectivity();
-    if (!connectivity.contains(ConnectivityResult.none)) // Delete from Supabase if internet available
+    if (connectivity != ConnectivityResult.none) // Delete from Supabase if internet available
      {
       try{ // Successfull delete in both Supabase and Sembast
         await _supabase.from('focus_hub').delete().eq('Task_id', taskId); // It means from the table focus_hub delete a task which task ID is equal to the given task_ID
@@ -179,7 +179,7 @@ class TaskRepository
     await _table.record(task.taskId).put(db, task.toMap()); // Update sembast 
 
     final connectivity = await Connectivity().checkConnectivity();
-    if (!connectivity.contains(ConnectivityResult.none)) {
+    if (connectivity != ConnectivityResult.none) {
       await _syncTask(task); // Sync to the supabase if internet available
     }
  
