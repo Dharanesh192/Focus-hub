@@ -18,6 +18,7 @@ class TaskRepository
   // Variable declaration
   static Database? _db; //initialize the variable for database with the database type and it is a static variable it means one database can be used across multi object and can be null
   final _table = stringMapStoreFactory.store('tasks'); // To create a table in the database with the name (tasks)
+  final _deleteStore = StoreRef<String, String>('delete'); // A database to store the daleted task ID which happend in the offline
   final _supabase = Supabase.instance.client; // Declare variable to use the supabase function
   final _uuid = const Uuid(); // Declare a variable to use the UUID function to generate unique ID for each task
 
@@ -116,15 +117,42 @@ class TaskRepository
   }
 
   // Delete task
-  Future<void> deleteTask(String taskId) async { // In this function it comes with a task ID 
+    Future<void> deleteTask(String taskId) async { // In this function it comes with a task ID 
     final db = await dbcreation;
-    await _table.record(taskId).delete(db); // Delete that task from sembast
     final connectivity = await Connectivity().checkConnectivity();
     if (connectivity != ConnectivityResult.none) // Delete from Supabase if internet available
      {
-      await _supabase.from('focus_hub').delete().eq('Task_id', taskId); // It means from the table focus_hub delete a task which task ID is equal to the given task_ID
+      try{ // Successfull delete in both Supabase and Sembast
+        await _supabase.from('focus_hub').delete().eq('Task_id', taskId); // It means from the table focus_hub delete a task which task ID is equal to the given task_ID
+        await _table.record(taskId).delete(db); // Delete that task from sembast
+      }
+      catch(e){ // Unable to delete in Supabase
+        await _deleteStore.record(taskId).put(db, taskId); // Store the undeleted record in this table
+        await _table.record(taskId).delete(db); // Delete that task from sembast
+      }
     }
- 
+    else{ // Unable to delete in Supabase
+        await _deleteStore.record(taskId).put(db, taskId); // Store the undeleted record in this table
+        await _table.record(taskId).delete(db); // Delete that task from sembast
+    }
+  }
+
+  // Delete offline tasks from Supabase when internet reconnects
+  Future<void> Deleteoffline() async {
+    final db = await dbcreation;
+    // Retrieve all pending deletion records
+    final records = await _deleteStore.find(db);
+    
+    for (final record in records) {
+      final taskId = record.value;
+        // Check whether the task exists in Supabase
+        final existingTask = await _supabase.from('focus_hub').select('Task_id').eq('Task_id', taskId);
+        if (existingTask.isNotEmpty) {
+          await _supabase.from('focus_hub').delete().eq('Task_id', taskId);
+        }
+        // Remove the deletion record from Sembast
+        await _deleteStore.record(taskId).delete(db);
+    }
   }
 
   // Complete task
