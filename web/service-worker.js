@@ -1,6 +1,7 @@
 'use strict';
 
-const CACHE_NAME = 'focus-hub-v5';
+const CACHE_NAME = 'focus-hub-v6';
+// Changed the theme colors
 const MAX_RETRIES = 3;
 const FETCH_TIMEOUT_MS = 10000;
 const RETRY_DELAY_MS = 1000;
