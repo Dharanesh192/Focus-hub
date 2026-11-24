@@ -466,17 +466,9 @@ class TaskviewState extends State<Taskview> with WidgetsBindingObserver {
                                         taskdata(); // Refresh the task list after editing
                                       }
                                     } else if (value == 'delete') {
-                                      final removedtask = filtertask[index];
-                                      setState(() {
-                                        filtertask.removeAt(index); // Remove the task from the list
-                                      });
                                       try {
-                                        await _functions.deleteTask(removedtask.taskId); // Delete the task from the database
-                                        taskdata();
+                                        await _functions.deleteTask(filtertask[index].taskId); // Delete the task from the database
                                       } catch (e) {
-                                        setState(() {
-                                          filtertask.insert(index, removedtask); // Revert the UI change if deletion fails
-                                        });
                                           showLocalSnackbar(
                                             context,
                                             message: 'Error : Can\'t delete the task 🧐',
