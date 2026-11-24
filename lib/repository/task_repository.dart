@@ -8,6 +8,7 @@ import 'package:supabase_flutter/supabase_flutter.dart'; // To use the features 
 import 'package:uuid/uuid.dart'; // To generate unique ID
 import 'package:to_do_list/models/task_model.dart'; // File path to the task model to convert the list data into the map data
 import 'package:collection/collection.dart';
+import 'Screen/task_view.dart'; // TO use the taskdata() in task_view.dart
 
 /* Here all the function are declear with the (Future) Keyword why? 
 The answer is that here all the function need to run in backend and take time to complete. So we use (Future) to tell the flutter that this function take time so dont wait for this to complete and move to the next step.
@@ -20,6 +21,7 @@ class TaskRepository
   final _table = stringMapStoreFactory.store('tasks'); // To create a table in the database with the name (tasks)
   final _deleteStore = StoreRef<String, String>('delete'); // A database to store the daleted task ID which happend in the offline
   final _supabase = Supabase.instance.client; // Declare variable to use the supabase function
+  final _refresh = GlobalKey<TaskviewState>(); // To access the fnctions from the task_view.dart file
   final _uuid = const Uuid(); // Declare a variable to use the UUID function to generate unique ID for each task
 
   // Database initialization
@@ -113,27 +115,23 @@ class TaskRepository
     {
       await _syncTask(task);
     }
- 
   }
-
-  // Delete task
+  
+    // Delete task
     Future<void> deleteTask(String taskId) async { // In this function it comes with a task ID 
     final db = await dbcreation;
+    await _deleteStore.record(taskId).put(db, taskId); // Store the undeleted record in this table
+    await _table.record(taskId).delete(db); // Delete that task from sembast
+    _refresh.currentState?.taskdata(); 
     final connectivity = await Connectivity().checkConnectivity();
     if (connectivity != ConnectivityResult.none) // Delete from Supabase if internet available
      {
       try{ // Successfull delete in both Supabase and Sembast
         await _supabase.from('focus_hub').delete().eq('Task_id', taskId); // It means from the table focus_hub delete a task which task ID is equal to the given task_ID
-        await _table.record(taskId).delete(db); // Delete that task from sembast
+        await _deleteStore.record(taskId).delete(db); // Store the undeleted record in this table
       }
-      catch(e){ // Unable to delete in Supabase
-        await _deleteStore.record(taskId).put(db, taskId); // Store the undeleted record in this table
-        await _table.record(taskId).delete(db); // Delete that task from sembast
+      catch(e){ // Unable to delete in Supabase so keep the delete task in that table     
       }
-    }
-    else{ // Unable to delete in Supabase
-        await _deleteStore.record(taskId).put(db, taskId); // Store the undeleted record in this table
-        await _table.record(taskId).delete(db); // Delete that task from sembast
     }
   }
 
